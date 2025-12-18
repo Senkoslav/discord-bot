@@ -12,6 +12,4 @@ services:
       - USE_REDIS=false
     volumes:
       - ./data:/app/data
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
+      
