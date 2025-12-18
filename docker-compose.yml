@@ -11,10 +11,7 @@ services:
       - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
       - USE_REDIS=${USE_REDIS:-false}
     volumes:
-      # Persist SQLite database
       - ./data:/app/data
-      # Optional: mount cookies file for age-restricted content
-      # - ./cookies.txt:/app/cookies.txt:ro
     depends_on:
       redis:
         condition: service_healthy
@@ -27,43 +24,8 @@ services:
       start_period: 10s
     networks:
       - bot-network
-
-  redis:
-    image: redis:7-alpine
-    container_name: music-bot-redis
-    restart: unless-stopped
-    command: redis-server --appendonly yes
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - bot-network
-    profiles:
-      - redis
-
-  # Optional: Lavalink server for scalable audio streaming
-  # Uncomment to use Lavalink instead of built-in ffmpeg streaming
-  # lavalink:
-  #   image: ghcr.io/lavalink-devs/lavalink:4
-  #   container_name: music-bot-lavalink
-  #   restart: unless-stopped
-  #   environment:
-  #     - SERVER_PORT=2333
-  #     - LAVALINK_SERVER_PASSWORD=youshallnotpass
-  #   volumes:
-  #     - ./lavalink/application.yml:/opt/Lavalink/application.yml:ro
-  #   networks:
-  #     - bot-network
-  #   profiles:
-  #     - lavalink
-
-volumes:
-  redis-data:
-
-networks:
-  bot-network:
-    driver: bridge
+    # ДОБАВЬ ЭТИ СТРОКИ:
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    network_mode: bridge  # ← ВАЖНО!
