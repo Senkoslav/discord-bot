@@ -5,27 +5,13 @@ services:
       dockerfile: Dockerfile
     container_name: music-bot
     restart: unless-stopped
+    network_mode: host
     env_file:
       - .env
     environment:
-      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
-      - USE_REDIS=${USE_REDIS:-false}
+      - USE_REDIS=false
     volumes:
       - ./data:/app/data
-    depends_on:
-      redis:
-        condition: service_healthy
-        required: false
-    healthcheck:
-      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    networks:
-      - bot-network
-    # ДОБАВЬ ЭТИ СТРОКИ:
     dns:
       - 8.8.8.8
-      - 8.8.4.4
-    network_mode: bridge  # ← ВАЖНО!
+      - 1.1.1.1
